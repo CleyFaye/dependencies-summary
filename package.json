@@ -1,0 +1,35 @@
+{
+  "name": "@cley_faye/dependencies-summary",
+  "version": "0.1.0",
+  "description": "Create a markdown listing of all tools and licenses in a node project.",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "bin": {
+    "dependencies-summary": "main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CleyFaye/dependencies-summary.git"
+  },
+  "author": "Gabriel Paul \"Cley Faye\" Risterucci",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CleyFaye/dependencies-summary/issues"
+  },
+  "homepage": "https://github.com/CleyFaye/dependencies-summary#readme",
+  "devDependencies": {
+    "eslint": "^6.1.0"
+  },
+  "dependencies": {
+    "commander": "^3.0.0",
+    "esm": "^3.2.25",
+    "fs-extra": "^8.1.0",
+    "license-checker": "^25.0.1"
+  },
+  "files": [
+    "bin/**/*.js",
+    "main.js"
+  ]
+}
