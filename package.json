@@ -20,12 +20,12 @@
   },
   "homepage": "https://github.com/CleyFaye/dependencies-summary#readme",
   "devDependencies": {
-    "eslint": "^6.2.2"
+    "eslint": "^6.8.0"
   },
   "dependencies": {
-    "commander": "^3.0.0",
+    "commander": "^5.0.0",
     "esm": "^3.2.25",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.0.0",
     "license-checker": "^25.0.1"
   },
   "files": [
