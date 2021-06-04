@@ -5,11 +5,13 @@
   "main": "main.js",
   "scripts": {
     "start": "node bin/dependencies-summary.js",
-    "prepack": "npm exec grunt clean build"
+    "prepack": "npm run grunt -- clean build",
+    "grunt": "npm exec grunt -- --gruntfile Gruntfile.cjs"
   },
   "bin": {
     "dependencies-summary": "bin/dependencies-summary.js"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CleyFaye/dependencies-summary.git"
@@ -36,7 +38,6 @@
   },
   "dependencies": {
     "commander": "^7.2.0",
-    "esm": "^3.2.25",
     "license-checker-rseidelsohn": "^2.1.1"
   },
   "files": [
