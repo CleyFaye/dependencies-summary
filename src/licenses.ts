@@ -1,14 +1,22 @@
 import {writeFile} from "fs/promises";
 import {Data, DepInfo} from "license-checker-rseidelsohn";
 import {
+  title as mdTitle,
+  list as mdList,
+  width as mdWidth,
+  TitleLevel,
+} from "./markdown.js";
+import {
   pCheck,
   selfName,
 } from "./util.js";
 
+const MAX_WIDTH = 100;
+
 /** Header for production/development versions */
 const getHeader = (production: boolean) => production
-  ? "Licenses used by the executable/packaged part of the software"
-  : "Licenses used for development tools and libraries";
+  ? "Packages and projects used by the executable/packaged part of the software"
+  : "Packages and projects used for development tools and libraries";
 
 /** Remove extra spaces at end of line */
 const trimLicense = (licenseText?: string) => licenseText?.split("\n").map(
@@ -33,24 +41,40 @@ const getLicense = (packageDef: DepInfo) => {
 const formatPackage = (packages: Data, packageName: string) => {
   const pkg = packages[packageName];
   return `
-## ${packageName}
-
+${mdTitle(packageName, TitleLevel.level2)}
 ${pkg.description ?? "(no description provided)"}
-
-### Details for ${packageName}
-
-- License type: ${pkg.licenses ?? "(undefined)"}
-- URL: ${pkg.url
-    ? `<${pkg.url}>`
-    : "(none provided)"}
-- Publisher: ${pkg.publisher ?? "(none provided)"}
-
-### License for ${packageName}
+${mdTitle(`Details for ${packageName}`, TitleLevel.level3)}
+${
+  mdList([
+    `License type: ${pkg.licenses ?? "(undefined)"}`,
+    `URL: ${pkg.url ? `<${pkg.url}>` : "(none provided)"}`,
+    `Publisher: ${pkg.publisher ?? "(none provided)"}`,
+  ])
+}
+${mdTitle(`License for ${packageName}`, TitleLevel.level3)}
 
 \`\`\`text
-${getLicense(pkg) ?? "(missing)"}
+${mdWidth(getLicense(pkg) ?? "(missing)", MAX_WIDTH)}
 \`\`\`
 `.substring(1);
+};
+
+/** Create a text summary of all licenses */
+const getSummary = (packages: Data) => {
+  const licenses: Record<string, number> = {};
+  for (const pkg of Object.values(packages)) {
+    const pkgLicense = pkg.licenses ?? "(unknown)";
+    if (pkgLicense in licenses) {
+      ++licenses[pkgLicense];
+    } else {
+      licenses[pkgLicense] = 1;
+    }
+  }
+  const summaryList = Object.keys(licenses).map(licenseName => {
+    const count = licenses[licenseName];
+    return `${licenseName}: ${count}`;
+  });
+  return `Licenses summary:\n${mdList(summaryList)}`;
 };
 
 /**
@@ -60,7 +84,8 @@ ${getLicense(pkg) ?? "(missing)"}
  * Use the production header
  */
 const makeOutput = (production: boolean, packages: Data) => `
-# ${getHeader(production)}
+${mdTitle(getHeader(production), TitleLevel.level1)}
+${getSummary(packages)}
 
 ${Object.keys(packages).map(
     key => formatPackage(
