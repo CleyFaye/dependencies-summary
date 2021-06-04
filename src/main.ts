@@ -1,7 +1,7 @@
 import program from "commander";
-import outputDependencies from "./dependencies.js";
+import {writeDependencies} from "./dependencies.js";
 import {error, print} from "./io.js";
-import outputLicenses from "./licenses.js";
+import {writeLicenses} from "./licenses.js";
 import {getSelfPackage} from "./selfpackage.js";
 
 const main = async () => {
@@ -31,9 +31,9 @@ const main = async () => {
   print(`Production output path: ${options.production as string}`);
   print(`Development output path: ${options.development as string}`);
   return Promise.all([
-    outputDependencies(options.libraries as string),
-    outputLicenses(options.production as string, true),
-    outputLicenses(options.development as string, false),
+    writeDependencies(".", options.libraries as string),
+    writeLicenses(".", options.production as string, true),
+    writeLicenses(".", options.development as string, false),
   ]);
 };
 main().catch(e => error(e));

@@ -96,19 +96,14 @@ ${Object.keys(packages).map(
     .join("\n\n")}
 `.substring(1);
 
-/**
- * Output the full license listing
- *
- * @param outputPath
- * Output file path
- *
- * @param production
- * Output only production if true, only development if false
- */
-export default async (outputPath: string, production: boolean): Promise<void> => {
+/** Get full license listing */
+export const getLicensesOutput = async (
+  projectPath: string,
+  production: boolean,
+): Promise<string> => {
   const selfPackageName = await selfName();
   const pkgListing = await pCheck({
-    start: ".",
+    start: projectPath,
     production,
     development: !production,
     excludePackages: [selfPackageName],
@@ -121,6 +116,28 @@ export default async (outputPath: string, production: boolean): Promise<void> =>
       licenseText: null,
     },
   });
-  const output = makeOutput(production, pkgListing);
-  await writeFile(outputPath, output);
+  return makeOutput(production, pkgListing);
+};
+
+/**
+ * Output the full license listing
+ *
+ * @param outputPath
+ * Output file path
+ *
+ * @param production
+ * Output only production if true, only development if false
+ */
+export const writeLicenses = async (
+  projectPath: string,
+  outputPath: string,
+  production: boolean,
+): Promise<void> => {
+  await writeFile(
+    outputPath,
+    await getLicensesOutput(
+      projectPath,
+      production,
+    ),
+  );
 };

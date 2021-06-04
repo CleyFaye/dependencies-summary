@@ -69,6 +69,13 @@ The following libraries and dependencies are required for development/building:
 ${makeList(splittedResult.development)}
 `.substring(1);
 
+/** List all direct and indirect dependencies */
+export const getDependenciesOutput = async (projectPath: string): Promise<string> => {
+  const data = await pCheck({start: projectPath});
+  const splitted = await splitOutputs(data);
+  return formatOutput(splitted);
+};
+
 /**
  * List all direct and indirect dependencies in an output file.
  *
@@ -77,9 +84,6 @@ ${makeList(splittedResult.development)}
  *
  * @return
  */
-export default async (outputPath: string): Promise<void> => {
-  const data = await pCheck({start: "."});
-  const splitted = await splitOutputs(data);
-  const formatted = formatOutput(splitted);
-  await writeFile(outputPath, formatted);
+export const writeDependencies = async (projectPath:string, outputPath: string): Promise<void> => {
+  await writeFile(outputPath, await getDependenciesOutput(projectPath));
 };
