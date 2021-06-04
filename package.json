@@ -1,6 +1,6 @@
 {
   "name": "@cley_faye/dependencies-summary",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "Create a markdown listing of all tools and licenses in a node project.",
   "main": "main.js",
   "scripts": {
