@@ -1,13 +1,16 @@
 import {writeFile} from "fs-extra";
-import {getDependencies} from "./util";
-import {filterPackages} from "./util";
-import {pCheck} from "./util";
+import {
+  getDependencies,
+  filterPackages,
+  pCheck,
+} from "./util";
 
-/** Split license-checker output into production and dev dependencies
- * 
+/**
+ * Split license-checker output into production and dev dependencies
+ *
  * @param {Object} checkerOutput
  * The output of license-checker
- * 
+ *
  * @return {Promise<Object>}
  * An object with a "production" and a "development" properties.
  * These properties each have a value similar to the output of license-checker
@@ -19,28 +22,31 @@ const splitOutputs = checkerOutput => Promise.all([
 ]).then(([prodDeps, devDeps]) => Promise.all([
   filterPackages(checkerOutput, prodDeps),
   filterPackages(checkerOutput, devDeps),
-])).then(([production, development]) => ({
-  production,
-  development,
-}));
+]))
+  .then(([production, development]) => ({
+    production,
+    development,
+  }));
 
-/** Make a markdown list from a list of packages
- * 
+/**
+ * Make a markdown list from a list of packages
+ *
  * @param {Object} packages
  * List of packages
- * 
+ *
  * @return {string}
  */
-const makeList = packages =>
-  Object.keys(packages).map(
-    key => `- ${key} (${packages[key].licenses})`
-  ).join("\n");
+const makeList = packages => Object.keys(packages).map(
+  key => `- ${key} (${packages[key].licenses})`,
+)
+  .join("\n");
 
-/** Format the splitted output from splitOutputs to markdown
- * 
+/**
+ * Format the splitted output from splitOutputs to markdown
+ *
  * @param {Object} splittedOutput
  * Output from splitOutputs()
- * 
+ *
  * @return {string}
  * Markdown content
  */
@@ -64,20 +70,20 @@ The following libraries and dependencies are required for development/building:
 ${makeList(splittedResult.development)}
 `.substring(1);
 
-/** List all direct and indirect dependencies in an output file.
- * 
+/**
+ * List all direct and indirect dependencies in an output file.
+ *
  * @param {string} outputPath
  * Path for output file
- * 
+ *
  * @return {Promise}
  */
-export default outputPath =>
-  pCheck({
-    start: ".",
-  }).then(
-    splitOutputs
-  ).then(
-    formatOutput
-  ).then(
-    data => writeFile(outputPath, data)
+export default outputPath => pCheck({start: "."}).then(
+  splitOutputs,
+)
+  .then(
+    formatOutput,
+  )
+  .then(
+    data => writeFile(outputPath, data),
   );

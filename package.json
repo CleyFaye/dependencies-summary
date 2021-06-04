@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/CleyFaye/dependencies-summary#readme",
   "devDependencies": {
-    "eslint": "^7.27.0"
+    "@keeex/eslint-config": "^1.4.2",
+    "eslint": "^7.27.0",
+    "eslint-plugin-promise": "^5.1.0"
   },
   "dependencies": {
     "commander": "^7.2.0",
