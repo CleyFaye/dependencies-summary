@@ -21,13 +21,14 @@ const main = () => {
     "Output file for development dependencies",
     "licenses.development.md");
   program.parse(process.argv);
-  console.log(`Listing output path: ${program.libraries}`);
-  console.log(`Production output path: ${program.production}`);
-  console.log(`Development output path: ${program.development}`);
+  const options = program.opts();
+  console.log(`Listing output path: ${options.libraries}`);
+  console.log(`Production output path: ${options.production}`);
+  console.log(`Development output path: ${options.development}`);
   Promise.all([
-    outputDependencies(program.libraries),
-    outputLicenses(program.production, true),
-    outputLicenses(program.development, false),
+    outputDependencies(options.libraries),
+    outputLicenses(options.production, true),
+    outputLicenses(options.development, false),
   ]);
 };
 main();
