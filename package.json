@@ -4,10 +4,11 @@
   "description": "Create a markdown listing of all tools and licenses in a node project.",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js"
+    "start": "node bin/dependencies-summary.js",
+    "prepack": "npm exec grunt clean build"
   },
   "bin": {
-    "dependencies-summary": "main.js"
+    "dependencies-summary": "bin/dependencies-summary.js"
   },
   "repository": {
     "type": "git",
@@ -21,17 +22,25 @@
   "homepage": "https://github.com/CleyFaye/dependencies-summary#readme",
   "devDependencies": {
     "@keeex/eslint-config": "^1.4.2",
+    "@types/node": "^15.12.0",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
     "eslint": "^7.27.0",
-    "eslint-plugin-promise": "^5.1.0"
+    "eslint-plugin-promise": "^5.1.0",
+    "grunt": "^1.4.1",
+    "grunt-banner": "^0.6.0",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-ts": "^6.0.0-beta.22",
+    "load-grunt-tasks": "^5.1.0",
+    "typescript": "^4.3.2"
   },
   "dependencies": {
     "commander": "^7.2.0",
     "esm": "^3.2.25",
-    "fs-extra": "^10.0.0",
-    "license-checker": "^25.0.1"
+    "license-checker-rseidelsohn": "^2.1.1"
   },
   "files": [
     "bin/**/*.js",
-    "main.js"
+    "lib/**/*.js"
   ]
 }

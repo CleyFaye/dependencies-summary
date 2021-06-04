@@ -1,10 +1,11 @@
 import program from "commander";
-import pkg from "../package";
-import outputDependencies from "./dependencies";
-import {error, print} from "./io";
-import outputLicenses from "./licenses";
+import outputDependencies from "./dependencies.js";
+import {error, print} from "./io.js";
+import outputLicenses from "./licenses.js";
+import {getSelfPackage} from "./selfpackage.js";
 
-const main = () => {
+const main = async () => {
+  const pkg = await getSelfPackage();
   program.version(pkg.version);
   program.name("dependencies-summary");
   program.description("Ouptut all the licenses and dependencies "
@@ -26,13 +27,13 @@ const main = () => {
   );
   program.parse(process.argv);
   const options = program.opts();
-  print(`Listing output path: ${options.libraries}`);
-  print(`Production output path: ${options.production}`);
-  print(`Development output path: ${options.development}`);
+  print(`Listing output path: ${options.libraries as string}`);
+  print(`Production output path: ${options.production as string}`);
+  print(`Development output path: ${options.development as string}`);
   return Promise.all([
-    outputDependencies(options.libraries),
-    outputLicenses(options.production, true),
-    outputLicenses(options.development, false),
+    outputDependencies(options.libraries as string),
+    outputLicenses(options.production as string, true),
+    outputLicenses(options.development as string, false),
   ]);
 };
 main().catch(e => error(e));

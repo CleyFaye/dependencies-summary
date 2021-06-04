@@ -1,56 +1,55 @@
-import {writeFile} from "fs-extra";
+import {writeFile} from "fs/promises";
+import {Data} from "license-checker-rseidelsohn";
 import {
   getDependencies,
   filterPackages,
   pCheck,
-} from "./util";
+} from "./util.js";
+
+interface SplitOutput {
+  production: Data,
+  development: Data,
+}
 
 /**
  * Split license-checker output into production and dev dependencies
  *
- * @param {Object} checkerOutput
+ * @param checkerOutput
  * The output of license-checker
  *
- * @return {Promise<Object>}
+ * @return
  * An object with a "production" and a "development" properties.
  * These properties each have a value similar to the output of license-checker
  * but filtered accordingly.
  */
-const splitOutputs = checkerOutput => Promise.all([
-  getDependencies(true),
-  getDependencies(false),
-]).then(([prodDeps, devDeps]) => Promise.all([
-  filterPackages(checkerOutput, prodDeps),
-  filterPackages(checkerOutput, devDeps),
-]))
-  .then(([production, development]) => ({
-    production,
-    development,
-  }));
+const splitOutputs = async (checkerOutput: Data) => ({
+  production: filterPackages(checkerOutput, await getDependencies(true)),
+  development: filterPackages(checkerOutput, await getDependencies(false)),
+});
 
 /**
  * Make a markdown list from a list of packages
  *
- * @param {Object} packages
+ * @param packages
  * List of packages
  *
  * @return {string}
  */
-const makeList = packages => Object.keys(packages).map(
-  key => `- ${key} (${packages[key].licenses})`,
+const makeList = (packages: Data) => Object.keys(packages).map(
+  key => `- ${key} (${packages[key].licenses ?? "(undefined)"})`,
 )
   .join("\n");
 
 /**
  * Format the splitted output from splitOutputs to markdown
  *
- * @param {Object} splittedOutput
+ * @param splittedOutput
  * Output from splitOutputs()
  *
- * @return {string}
+ * @return
  * Markdown content
  */
-const formatOutput = splittedResult => `
+const formatOutput = (splittedResult: SplitOutput) => `
 Dependencies and libraries
 ==========================
 
@@ -73,17 +72,14 @@ ${makeList(splittedResult.development)}
 /**
  * List all direct and indirect dependencies in an output file.
  *
- * @param {string} outputPath
+ * @param outputPath
  * Path for output file
  *
- * @return {Promise}
+ * @return
  */
-export default outputPath => pCheck({start: "."}).then(
-  splitOutputs,
-)
-  .then(
-    formatOutput,
-  )
-  .then(
-    data => writeFile(outputPath, data),
-  );
+export default async (outputPath: string): Promise<void> => {
+  const data = await pCheck({start: "."});
+  const splitted = await splitOutputs(data);
+  const formatted = formatOutput(splitted);
+  await writeFile(outputPath, formatted);
+};
